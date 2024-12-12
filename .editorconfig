@@ -1,0 +1,59 @@
+# EditorConfig is awesome: https://editorconfig.org
+
+# Root of the configuration
+root = true
+
+# Default settings for all files
+[*]
+indent_style = space
+indent_size = 4
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C++ settings
+[*.cpp]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+
+[*.h]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+
+# Python settings
+[*.py]
+indent_size = 4
+indent_style = space
+max_line_length = 79
+python_version = 3
+
+# C# settings
+[*.cs]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+
+# JSON settings
+[*.json]
+indent_size = 2
+indent_style = space
+
+# YAML settings
+[*.yml]
+indent_size = 2
+indent_style = space
+
+# Markdown settings
+[*.md]
+max_line_length = 80
+
+# Ignore specific files
+[*.log]
+insert_final_newline = false
+
+# Ignore backup and temporary files
+[*.bak]
+trim_trailing_whitespace = false
