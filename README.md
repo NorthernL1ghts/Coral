@@ -25,4 +25,3 @@ where action is one of the supported actions in premake: [https://premake.github
 
 ## License
 Coral is licensed under the [MIT](./LICENSE) license
-"# Coral" 
