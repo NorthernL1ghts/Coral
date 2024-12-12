@@ -1,0 +1,32 @@
+name: Bug Fix Workflow
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Assign bug label
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const issue = context.issue;
+            const label = 'bug';
+            await github.rest.issues.addLabels({
+              ...issue,
+              labels: [label]
+            });
+
+      # Send a Slack notification when a bug is reported or updated
+      # This action uses the `slack-notify` GitHub Action created by peter-evans.
+      # To use this, you must set up an Incoming Webhook URL from Slack and store it as a GitHub secret (SLACK_WEBHOOK_URL).
+      - name: Notify team about bug
+        uses: peter-evans/slack-notify@v1
+        with:
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          text: "New bug reported. Please check the issue and prioritize."
