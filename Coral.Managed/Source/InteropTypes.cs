@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -33,7 +33,6 @@ public sealed class NativeArrayEnumerator<T> : IEnumerator<T>
 	object IEnumerator.Current => Current!;
 
 	public T Current => m_Elements[m_Index];
-
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -131,7 +130,6 @@ public struct NativeArray<T> : IDisposable, IEnumerable<T>
 
 	public static implicit operator T[](NativeArray<T> InArray) => InArray.ToArray();
 	public static implicit operator NativeArray<T>(T[] InArray) => new(InArray);
-
 }
 
 public static class ArrayStorage
@@ -255,5 +253,4 @@ public struct ReflectionType
 	}
 
 	public static implicit operator ReflectionType(Type? InType) => new(TypeInterface.s_CachedTypes.Add(InType));
-
 }

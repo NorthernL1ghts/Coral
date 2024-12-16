@@ -1,4 +1,4 @@
-﻿using Coral.Managed.Interop;
+using Coral.Managed.Interop;
 
 using System;
 using System.Collections.Generic;
@@ -182,14 +182,18 @@ public static class AssemblyLoader
 
 			if (!s_AssemblyContexts.TryGetValue(InContextId, out var alc))
 			{
-				LogMessage($"Failed to load assembly '{InAssemblyFilePath}', couldn't find AssemblyLoadContext with id {InContextId}.", MessageLevel.Error);
-				s_LastLoadStatus = AssemblyLoadStatus.UnknownError;
+				LogMessage($"Failed to load assembly '{InAssemblyFilePath}', couldn't find AssemblyLoadContext with id {InContextId}.",
+                    MessageLevel.Error);
+
+                s_LastLoadStatus = AssemblyLoadStatus.UnknownError;
 				return -1;
 			}
 
 			if (alc == null)
 			{
-				LogMessage($"Failed to load assembly '{InAssemblyFilePath}', AssemblyLoadContext with id {InContextId} was null.", MessageLevel.Error);
+				LogMessage($"Failed to load assembly '{InAssemblyFilePath}', AssemblyLoadContext with id {InContextId} was null.",
+                    MessageLevel.Error);
+
 				s_LastLoadStatus = AssemblyLoadStatus.UnknownError;
 				return -1;
 			}
@@ -224,14 +228,18 @@ public static class AssemblyLoader
 		{
 			if (!s_AssemblyContexts.TryGetValue(InContextId, out var alc))
 			{
-				LogMessage($"Failed to load assembly, couldn't find AssemblyLoadContext with id {InContextId}.", MessageLevel.Error);
+				LogMessage($"Failed to load assembly, couldn't find AssemblyLoadContext with id {InContextId}.",
+                    MessageLevel.Error);
+
 				s_LastLoadStatus = AssemblyLoadStatus.UnknownError;
 				return -1;
 			}
 
 			if (alc == null)
 			{
-				LogMessage($"Failed to load assembly, couldn't find AssemblyLoadContext with id {InContextId} was null.", MessageLevel.Error);
+				LogMessage($"Failed to load assembly, couldn't find AssemblyLoadContext with id {InContextId} was null.",
+                    MessageLevel.Error);
+
 				s_LastLoadStatus = AssemblyLoadStatus.UnknownError;
 				return -1;
 			}
@@ -266,7 +274,9 @@ public static class AssemblyLoader
 	{
 		if (!s_AssemblyCache.TryGetValue(InAssemblyId, out var assembly))
 		{
-			LogMessage($"Couldn't get assembly name for assembly '{InAssemblyId}', assembly not in dictionary.", MessageLevel.Error);
+			LogMessage($"Couldn't get assembly name for assembly '{InAssemblyId}', assembly not in dictionary.",
+                MessageLevel.Error);
+
 			return "";
 		}
 
@@ -287,5 +297,4 @@ public static class AssemblyLoader
 
 		handles.Add(InHandle);
 	}
-
 }

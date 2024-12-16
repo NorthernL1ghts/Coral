@@ -1,4 +1,4 @@
-﻿using Coral.Managed.Interop;
+using Coral.Managed.Interop;
 
 using System;
 using System.Runtime.InteropServices;
@@ -7,9 +7,9 @@ namespace Coral.Managed;
 
 internal static class GarbageCollector
 {
-
 	[UnmanagedCallersOnly]
-	internal static void CollectGarbage(int InGeneration, GCCollectionMode InCollectionMode, Bool32 InBlocking, Bool32 InCompacting)
+	internal static void CollectGarbage(int InGeneration, GCCollectionMode InCollectionMode,
+        Bool32 InBlocking, Bool32 InCompacting)
 	{
 		try
 		{
@@ -36,5 +36,4 @@ internal static class GarbageCollector
 			ManagedHost.HandleException(ex);
 		}
 	}
-
 }

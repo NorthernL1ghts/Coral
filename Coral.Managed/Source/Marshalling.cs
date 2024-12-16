@@ -1,4 +1,4 @@
-﻿using Coral.Managed.Interop;
+using Coral.Managed.Interop;
 
 using System;
 using System.Linq;
@@ -216,7 +216,7 @@ public static class Marshalling
 		if (InType.IsPointer || InType == typeof(IntPtr))
 			return InValue;
 
-		// NOTE(Peter): Marshal.PtrToStructure<bool> doesn't seem to work
+		// NOTE: Marshal.PtrToStructure<bool> doesn't seem to work
 		//				instead we have to read it as a single byte and check the raw value
 		if (InType == typeof(bool))
 			return Marshal.PtrToStructure<byte>(InValue) > 0;
@@ -296,5 +296,4 @@ public static class Marshalling
 
 		return result;
 	}
-	
 }

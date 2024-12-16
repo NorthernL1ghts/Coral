@@ -1,4 +1,4 @@
-﻿using Coral.Managed.Interop;
+using Coral.Managed.Interop;
 
 using System;
 using System.Collections.Generic;
@@ -13,30 +13,12 @@ using static ManagedHost;
 
 internal enum ManagedType
 {
-	Unknown,
-
-	SByte,
-	Byte,
-	Short,
-	UShort,
-	Int,
-	UInt,
-	Long,
-	ULong,
-
-	Float,
-	Double,
-
-	Bool,
-
-	String,
-
-	Pointer
+	Unknown, SByte, Byte, Short, UShort, Int, UInt,
+	Long, ULong, Float, Double, Bool, String, Pointer
 };
 
 internal static class ManagedObject
 {
-
 	public readonly struct MethodKey : IEquatable<MethodKey>
 	{
 		public readonly string TypeName;
@@ -70,7 +52,8 @@ internal static class ManagedObject
 
 		public override int GetHashCode()
 		{
-			// NOTE(Peter): Josh Bloch's Hash (from https://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-overriding-gethashcode)
+			// NOTE: Josh Bloch's Hash
+            // (from https://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-overriding-gethashcode)
 			unchecked
 			{
 				int hash = 17;
@@ -89,7 +72,8 @@ internal static class ManagedObject
 	internal static Dictionary<MethodKey, MethodInfo> s_CachedMethods = new Dictionary<MethodKey, MethodInfo>();
 
 	[UnmanagedCallersOnly]
-	internal static unsafe IntPtr CreateObject(int InTypeID, Bool32 InWeakRef, IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount)
+	internal static unsafe IntPtr CreateObject(int InTypeID, Bool32 InWeakRef,
+        IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount)
 	{
 		try
 		{
@@ -104,7 +88,8 @@ internal static class ManagedObject
 			var currentType = type;
 			while (currentType != null)
 			{
-				ReadOnlySpan<ConstructorInfo> constructors = currentType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+				ReadOnlySpan<ConstructorInfo> constructors = currentType.GetConstructors(BindingFlags.NonPublic
+                    | BindingFlags.Public | BindingFlags.Instance);
 				
 				constructor = TypeInterface.FindSuitableMethod(".ctor", InParameterTypes, InParameterCount, constructors);
 
@@ -116,7 +101,9 @@ internal static class ManagedObject
 
 			if (constructor == null)
 			{
-				LogMessage($"Failed to find constructor for type {type.FullName} with {InParameterCount} parameters.", MessageLevel.Error);
+				LogMessage($"Failed to find constructor for type {type.FullName} with {InParameterCount} parameters.",
+                    MessageLevel.Error);
+
 				return IntPtr.Zero;
 			}
 
@@ -165,7 +152,8 @@ internal static class ManagedObject
 		}
 	}
 
-	private static unsafe MethodInfo? TryGetMethodInfo(Type InType, string InMethodName, ManagedType* InParameterTypes, int InParameterCount, BindingFlags InBindingFlags)
+	private static unsafe MethodInfo? TryGetMethodInfo(Type InType, string InMethodName,
+        ManagedType* InParameterTypes, int InParameterCount, BindingFlags InBindingFlags)
 	{
 		MethodInfo? methodInfo = null;
 
@@ -193,7 +181,8 @@ internal static class ManagedObject
 				baseType = baseType.BaseType;
 			}
 
-			methodInfo = TypeInterface.FindSuitableMethod<MethodInfo>(InMethodName, InParameterTypes, InParameterCount, CollectionsMarshal.AsSpan(methods));
+			methodInfo = TypeInterface.FindSuitableMethod<MethodInfo>(InMethodName, InParameterTypes,
+                InParameterCount, CollectionsMarshal.AsSpan(methods));
 
 			if (methodInfo == null)
 			{
@@ -208,7 +197,8 @@ internal static class ManagedObject
 	}
 
 	[UnmanagedCallersOnly]
-	internal static unsafe void InvokeStaticMethod(int InType, NativeString InMethodName, IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount)
+	internal static unsafe void InvokeStaticMethod(int InType, NativeString InMethodName,
+        IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount)
 	{
 		try
 		{
@@ -218,7 +208,9 @@ internal static class ManagedObject
 				return;
 			}
 
-			var methodInfo = TryGetMethodInfo(type, InMethodName, InParameterTypes, InParameterCount, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+			var methodInfo = TryGetMethodInfo(type, InMethodName, InParameterTypes, InParameterCount,
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+
 			var parameters = Marshalling.MarshalParameterArray(InParameters, InParameterCount, methodInfo);
 
 			methodInfo.Invoke(null, parameters);
@@ -230,7 +222,8 @@ internal static class ManagedObject
 	}
 
 	[UnmanagedCallersOnly]
-	internal static unsafe void InvokeStaticMethodRet(int InType, NativeString InMethodName, IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount, IntPtr InResultStorage)
+	internal static unsafe void InvokeStaticMethodRet(int InType, NativeString InMethodName,
+        IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount, IntPtr InResultStorage)
 	{
 		try
 		{
@@ -240,7 +233,9 @@ internal static class ManagedObject
 				return;
 			}
 
-			var methodInfo = TryGetMethodInfo(type, InMethodName, InParameterTypes, InParameterCount, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+			var methodInfo = TryGetMethodInfo(type, InMethodName, InParameterTypes, InParameterCount,
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+
 			var methodParameters = Marshalling.MarshalParameterArray(InParameters, InParameterCount, methodInfo);
 
 			object? value = methodInfo.Invoke(null, methodParameters);
@@ -257,7 +252,8 @@ internal static class ManagedObject
 	}
 
 	[UnmanagedCallersOnly]
-	internal static unsafe void InvokeMethod(IntPtr InObjectHandle, NativeString InMethodName, IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount)
+	internal static unsafe void InvokeMethod(IntPtr InObjectHandle, NativeString InMethodName,
+        IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount)
 	{
 		try
 		{
@@ -271,7 +267,9 @@ internal static class ManagedObject
 
 			var targetType = target.GetType();
 
-			var methodInfo = TryGetMethodInfo(targetType, InMethodName, InParameterTypes, InParameterCount, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			var methodInfo = TryGetMethodInfo(targetType, InMethodName, InParameterTypes,
+                InParameterCount, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
 			var parameters = Marshalling.MarshalParameterArray(InParameters, InParameterCount, methodInfo);
 
 			methodInfo.Invoke(target, parameters);
@@ -283,7 +281,8 @@ internal static class ManagedObject
 	}
 	
 	[UnmanagedCallersOnly]
-	internal static unsafe void InvokeMethodRet(IntPtr InObjectHandle, NativeString InMethodName, IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount, IntPtr InResultStorage)
+	internal static unsafe void InvokeMethodRet(IntPtr InObjectHandle, NativeString InMethodName,
+        IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount, IntPtr InResultStorage)
 	{
 		try
 		{
@@ -297,7 +296,9 @@ internal static class ManagedObject
 
 			var targetType = target.GetType();
 
-			var methodInfo = TryGetMethodInfo(targetType, InMethodName, InParameterTypes, InParameterCount, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			var methodInfo = TryGetMethodInfo(targetType, InMethodName, InParameterTypes,
+                InParameterCount, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
 			var methodParameters = Marshalling.MarshalParameterArray(InParameters, InParameterCount, methodInfo);
 			
 			object? value = methodInfo.Invoke(target, methodParameters);
@@ -402,7 +403,8 @@ internal static class ManagedObject
 			}
 
 			var targetType = target.GetType();
-			var propertyInfo = targetType.GetProperty(InPropertyName!, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			var propertyInfo = targetType.GetProperty(InPropertyName!, BindingFlags.Public |
+                BindingFlags.NonPublic | BindingFlags.Instance);
 		
 			if (propertyInfo == null)
 			{
@@ -439,7 +441,8 @@ internal static class ManagedObject
 			}
 
 			var targetType = target.GetType();
-			var propertyInfo = targetType.GetProperty(InPropertyName!, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			var propertyInfo = targetType.GetProperty(InPropertyName!, BindingFlags.Public | BindingFlags.NonPublic
+                | BindingFlags.Instance);
 
 			if (propertyInfo == null)
 			{

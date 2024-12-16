@@ -1,4 +1,4 @@
-﻿using Coral.Managed.Interop;
+using Coral.Managed.Interop;
 
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,8 @@ internal static class TypeInterface
 
 	internal static object? CreateInstance(Type InType, params object?[]? InArguments)
 	{
-		return InType.Assembly.CreateInstance(InType.FullName ?? string.Empty, false, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, InArguments!, null, null);
+		return InType.Assembly.CreateInstance(InType.FullName ?? string.Empty, false, BindingFlags.Public
+            | BindingFlags.NonPublic | BindingFlags.Instance, null, InArguments!, null, null);
 	}
 
 	private static Dictionary<Type, ManagedType> s_TypeConverters = new()
@@ -57,7 +58,8 @@ internal static class TypeInterface
 		{ typeof(string), ManagedType.String },
 	};
 
-	internal static unsafe T? FindSuitableMethod<T>(string? InMethodName, ManagedType* InParameterTypes, int InParameterCount, ReadOnlySpan<T> InMethods) where T : MethodBase
+	internal static unsafe T? FindSuitableMethod<T>(string? InMethodName, ManagedType* InParameterTypes,
+        int InParameterCount, ReadOnlySpan<T> InMethods) where T : MethodBase
 	{
 		if (InMethodName == null)
 			return null;
@@ -344,7 +346,8 @@ internal static class TypeInterface
 			if (!s_CachedTypes.TryGetValue(InType, out var type))
 				return;
 
-			ReadOnlySpan<MethodInfo> methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+			ReadOnlySpan<MethodInfo> methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic
+                | BindingFlags.Instance | BindingFlags.Static);
 
 			if (methods == null || methods.Length == 0)
 			{
@@ -376,7 +379,8 @@ internal static class TypeInterface
 			if (!s_CachedTypes.TryGetValue(InType, out var type))
 				return;
 
-			ReadOnlySpan<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+			ReadOnlySpan<FieldInfo> fields = type.GetFields(BindingFlags.Instance
+                | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
 
 			if (fields == null || fields.Length == 0)
 			{
@@ -408,7 +412,8 @@ internal static class TypeInterface
 			if (!s_CachedTypes.TryGetValue(InType, out var type))
 				return;
 
-			ReadOnlySpan<PropertyInfo> properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+			ReadOnlySpan<PropertyInfo> properties = type.GetProperties(BindingFlags.Instance
+                | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
 
 			if (properties == null || properties.Length == 0)
 			{
@@ -437,8 +442,9 @@ internal static class TypeInterface
 	{
 		try
 		{
-			if (!s_CachedTypes.TryGetValue(InType, out var type) || !s_CachedTypes.TryGetValue(InAttributeType, out var attributeType))
-				return false;
+			if (!s_CachedTypes.TryGetValue(InType, out var type) ||
+                !s_CachedTypes.TryGetValue(InAttributeType, out var attributeType))
+                return false;
 
 			return type.GetCustomAttribute(attributeType) != null;
 		}
@@ -502,7 +508,7 @@ internal static class TypeInterface
 		}
 	}
 
-	// TODO(Peter): Refactor this to GetMemberInfoName (should work for all types of members)
+	// TODO: Refactor this to GetMemberInfoName (should work for all types of members)
 	[UnmanagedCallersOnly]
 	internal static unsafe NativeString GetMethodInfoName(int InMethodInfo)
 	{
@@ -602,12 +608,7 @@ internal static class TypeInterface
 
 	internal enum TypeAccessibility
 	{
-		Public,
-		Private,
-		Protected,
-		Internal,
-		ProtectedPublic,
-		PrivateProtected
+		Public, Private, Protected, Internal, ProtectedPublic, PrivateProtected
 	}
 
 	private static TypeAccessibility GetTypeAccessibility(FieldInfo InFieldInfo)
@@ -700,7 +701,8 @@ internal static class TypeInterface
 	}
 
 	[UnmanagedCallersOnly]
-	internal static unsafe void GetFieldInfoAttributes(int InFieldInfo, int* OutAttributes, int* OutAttributesCount)
+	internal static unsafe void GetFieldInfoAttributes(int InFieldInfo,
+        int* OutAttributes, int* OutAttributesCount)
 	{
 		try
 		{
@@ -765,7 +767,8 @@ internal static class TypeInterface
 	}
 
 	[UnmanagedCallersOnly]
-	internal static unsafe void GetPropertyInfoAttributes(int InPropertyInfo, int* OutAttributes, int* OutAttributesCount)
+	internal static unsafe void GetPropertyInfoAttributes(int InPropertyInfo,
+        int* OutAttributes, int* OutAttributesCount)
 	{
 		try
 		{
@@ -797,7 +800,8 @@ internal static class TypeInterface
 	}
 
 	[UnmanagedCallersOnly]
-	internal static unsafe void GetAttributeFieldValue(int InAttribute, NativeString InFieldName, IntPtr OutValue)
+	internal static unsafe void GetAttributeFieldValue(int InAttribute,
+        NativeString InFieldName, IntPtr OutValue)
 	{
 		try
 		{
