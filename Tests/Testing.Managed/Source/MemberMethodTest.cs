@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace Testing.Managed;
@@ -11,7 +11,6 @@ public class DummyAttribute : Attribute
 
 public class MemberMethodTest
 {
-	
 	public struct DummyStruct
 	{
 		public int X;
@@ -125,5 +124,4 @@ public class MemberMethodTest
 
 	[Dummy(SomeValue = 10.0f)]
 	public void SomeFunction(){}
-
 }

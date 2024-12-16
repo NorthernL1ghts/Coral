@@ -1,4 +1,4 @@
-﻿using Coral.Managed.Interop;
+using Coral.Managed.Interop;
 
 using System;
 
@@ -16,7 +16,6 @@ public struct DummyStruct
 
 public class FieldMarshalTest
 {
-
 	public sbyte SByteFieldTest = 10;
 	public byte ByteFieldTest = 10;
 	public short ShortFieldTest = 10;
@@ -71,5 +70,4 @@ public class FieldMarshalTest
 
 	[Dummy(SomeValue = 10000.0f)]
 	public float AttributePropertyTest { get; private set; } = 50.0f;
-
 }

@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 
 using Coral.Managed.Interop;
 
-namespace Testing.Managed {
-
+namespace Testing.Managed
+{
 	public class InstanceTest
 	{
 		public float X = 50.0f;
@@ -286,7 +286,5 @@ namespace Testing.Managed {
 		{
 			s_Tests = new List<TestContainer>();
 		}
-
 	}
-
 }
