@@ -2,8 +2,8 @@ using Coral.Managed.Interop;
 
 using System;
 
-namespace Example.Managed {
-
+namespace Example.Managed
+{
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class CustomAttribute : Attribute
 	{
@@ -13,7 +13,6 @@ namespace Example.Managed {
 	[Custom(Value = -2500.0f)]
 	public class ExampleClass
 	{
-
 		public struct MyVec3
 		{
 			public float X;
@@ -79,7 +78,5 @@ namespace Example.Managed {
 			get => myPrivateValue;
 			set => myPrivateValue = value * 2;
 		}
-
 	}
-
 }
