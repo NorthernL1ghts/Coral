@@ -8,8 +8,8 @@
 #include <atomic>
 #include <cstring>
 
-namespace Coral {
-
+namespace Coral
+{
 	template <typename TElement, size_t PageSize = 256>
 	class StableVector
 	{
@@ -199,7 +199,6 @@ namespace Coral {
 			for (uint32_t i = 0; i < m_ElementCount; ++i)
 				fn((*this)[i]);
 		}
-
 	private:
 		struct Page
 		{
@@ -214,5 +213,4 @@ namespace Coral {
 		std::atomic<uint32_t> m_Capacity = 0;
 		uint64_t m_PageCount = 0;
 	};
-
 }

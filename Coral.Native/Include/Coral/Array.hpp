@@ -2,8 +2,8 @@
 
 #include "Memory.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	template<typename TValue>
 	class Array
 	{
@@ -81,12 +81,10 @@ namespace Coral {
 
 		const TValue* cbegin() const { return m_Ptr; }
 		const TValue* cend() const { return m_Ptr + m_Length; }
-
 	private:
 		TValue* m_Ptr = nullptr;
 		TValue* m_ArrayHandle = nullptr;
 		int32_t m_Length = 0;
 		Bool32 m_IsDisposed = false;
 	};
-
 }

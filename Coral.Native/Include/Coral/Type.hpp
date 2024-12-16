@@ -7,8 +7,8 @@
 #include "FieldInfo.hpp"
 #include "PropertyInfo.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	class Type
 	{
 	public:
@@ -40,7 +40,6 @@ namespace Coral {
 		operator bool() const { return m_Id != -1; }
 
 		TypeId GetTypeId() const { return m_Id; }
-
 	public:
 		template<typename... TArgs>
 		ManagedObject CreateInstance(TArgs&&... InArguments) const
@@ -53,7 +52,9 @@ namespace Coral {
 			{
 				const void* argumentsArr[argumentCount];
 				ManagedType argumentTypes[argumentCount];
-				AddToArray<TArgs...>(argumentsArr, argumentTypes, std::forward<TArgs>(InArguments)..., std::make_index_sequence<argumentCount> {});
+				AddToArray<TArgs...>(argumentsArr, argumentTypes, std::forward<TArgs>(InArguments)...,
+                    std::make_index_sequence<argumentCount> {});
+
 				result = CreateInstanceInternal(argumentsArr, argumentTypes, argumentCount);
 			}
 			else
@@ -75,7 +76,9 @@ namespace Coral {
 			{
 				const void* parameterValues[parameterCount];
 				ManagedType parameterTypes[parameterCount];
-				AddToArray<TArgs...>(parameterValues, parameterTypes, std::forward<TArgs>(InParameters)..., std::make_index_sequence<parameterCount> {});
+				AddToArray<TArgs...>(parameterValues, parameterTypes, std::forward<TArgs>(InParameters)...,
+                    std::make_index_sequence<parameterCount> {});
+
 				InvokeStaticMethodRetInternal(InMethodName, parameterValues, parameterTypes, parameterCount, &result);
 			}
 			else
@@ -95,7 +98,9 @@ namespace Coral {
 			{
 				const void* parameterValues[parameterCount];
 				ManagedType parameterTypes[parameterCount];
-				AddToArray<TArgs...>(parameterValues, parameterTypes, std::forward<TArgs>(InParameters)..., std::make_index_sequence<parameterCount> {});
+				AddToArray<TArgs...>(parameterValues, parameterTypes, std::forward<TArgs>(InParameters)...,
+                    std::make_index_sequence<parameterCount> {});
+
 				InvokeStaticMethodInternal(InMethodName, parameterValues, parameterTypes, parameterCount);
 			}
 			else
@@ -103,12 +108,14 @@ namespace Coral {
 				InvokeStaticMethodInternal(InMethodName, nullptr, nullptr, 0);
 			}
 		}
-
 	private:
 		ManagedObject CreateInstanceInternal(const void** InParameters, const ManagedType* InParameterTypes, size_t InLength) const;
-		void InvokeStaticMethodInternal(std::string_view InMethodName, const void** InParameters, const ManagedType* InParameterTypes, size_t InLength) const;
-		void InvokeStaticMethodRetInternal(std::string_view InMethodName, const void** InParameters, const ManagedType* InParameterTypes, size_t InLength, void* InResultStorage) const;
 
+		void InvokeStaticMethodInternal(std::string_view InMethodName, const void** InParameters,
+            const ManagedType* InParameterTypes, size_t InLength) const;
+
+		void InvokeStaticMethodRetInternal(std::string_view InMethodName, const void** InParameters,
+            const ManagedType* InParameterTypes, size_t InLength, void* InResultStorage) const;
 	private:
 		TypeId m_Id = -1;
 		Type* m_BaseType = nullptr;
@@ -133,5 +140,4 @@ namespace Coral {
 	private:
 		TypeId m_TypeID;
 	};
-
 }

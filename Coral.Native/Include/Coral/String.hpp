@@ -2,8 +2,8 @@
 
 #include "Core.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	class String
 	{
 	public:
@@ -20,10 +20,9 @@ namespace Coral {
 
 		CharType* Data() { return m_String; }
 		const CharType* Data() const { return m_String; }
-
 	private:
 		CharType* m_String = nullptr;
-		Bool32 m_IsDisposed = false; // NOTE(Peter): Required for the layout to match the C# NativeString struct, unused in C++
+		Bool32 m_IsDisposed = false; // NOTE: Required for the layout to match the C# NativeString struct, unused in C++
 	};
 
 	struct ScopedString
@@ -66,5 +65,4 @@ namespace Coral {
 	private:
 		String m_String;
 	};
-
 }

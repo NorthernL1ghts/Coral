@@ -1,7 +1,7 @@
-﻿#pragma once
+#pragma once
 
-namespace Coral {
-
+namespace Coral
+{
 	enum class GCCollectionMode
 	{
 		// Default is the same as using Forced directly
@@ -21,10 +21,10 @@ namespace Coral {
 	{
 	public:
 		static void Collect();
-		static void Collect(int32_t InGeneration, GCCollectionMode InCollectionMode = GCCollectionMode::Default, bool InBlocking = true, bool InCompacting = false);
+		static void Collect(int32_t InGeneration, GCCollectionMode InCollectionMode = GCCollectionMode::Default,
+            bool InBlocking = true, bool InCompacting = false);
 
 		static void WaitForPendingFinalizers();
 	};
-	
 }
 

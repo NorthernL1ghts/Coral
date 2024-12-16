@@ -3,8 +3,8 @@
 #include "TypeCache.hpp"
 #include "Attribute.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	String Type::GetFullName() const
 	{
 		return s_ManagedFunctions.GetFullTypeNameFptr(m_Id);
@@ -135,7 +135,8 @@ namespace Coral {
 		return m_Id == InOther.m_Id;
 	}
 
-	ManagedObject Type::CreateInstanceInternal(const void** InParameters, const ManagedType* InParameterTypes, size_t InLength) const
+	ManagedObject Type::CreateInstanceInternal(const void** InParameters,
+        const ManagedType* InParameterTypes, size_t InLength) const
 	{
 		ManagedObject result;
 		result.m_Handle = s_ManagedFunctions.CreateObjectFptr(m_Id, false, InParameters, InParameterTypes, static_cast<int32_t>(InLength));
@@ -143,20 +144,23 @@ namespace Coral {
 		return result;
 	}
 
-	void Type::InvokeStaticMethodInternal(std::string_view InMethodName, const void** InParameters, const ManagedType* InParameterTypes, size_t InLength) const
+	void Type::InvokeStaticMethodInternal(std::string_view InMethodName, const void** InParameters,
+        const ManagedType* InParameterTypes, size_t InLength) const
 	{
 		auto methodName = String::New(InMethodName);
 		s_ManagedFunctions.InvokeStaticMethodFptr(m_Id, methodName, InParameters, InParameterTypes, static_cast<int32_t>(InLength));
 		String::Free(methodName);
 	}
 
-	void Type::InvokeStaticMethodRetInternal(std::string_view InMethodName, const void** InParameters, const ManagedType* InParameterTypes, size_t InLength, void* InResultStorage) const
+	void Type::InvokeStaticMethodRetInternal(std::string_view InMethodName, const void** InParameters,
+        const ManagedType* InParameterTypes, size_t InLength, void* InResultStorage) const
 	{
 		auto methodName = String::New(InMethodName);
-		s_ManagedFunctions.InvokeStaticMethodRetFptr(m_Id, methodName, InParameters, InParameterTypes, static_cast<int32_t>(InLength), InResultStorage);
+		s_ManagedFunctions.InvokeStaticMethodRetFptr(m_Id, methodName, InParameters, InParameterTypes,
+            static_cast<int32_t>(InLength), InResultStorage);
+
 		String::Free(methodName);
 	}
-
 
 	ReflectionType::operator Type&() const
 	{
@@ -173,5 +177,4 @@ namespace Coral {
 
 		return result != nullptr ? *result : s_NullType;
 	}
-
 }

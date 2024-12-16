@@ -1,4 +1,4 @@
-﻿#include "ManagedObject.hpp"
+#include "ManagedObject.hpp"
 #include "Assembly.hpp"
 #include "CoralManagedFunctions.hpp"
 #include "String.hpp"
@@ -6,23 +6,27 @@
 #include "Type.hpp"
 #include "TypeCache.hpp"
 
-namespace Coral {
-
-	void ManagedObject::InvokeMethodInternal(std::string_view InMethodName, const void** InParameters, const ManagedType* InParameterTypes, size_t InLength) const
+namespace Coral
+{
+	void ManagedObject::InvokeMethodInternal(std::string_view InMethodName, const void** InParameters,
+        const ManagedType* InParameterTypes, size_t InLength) const
 	{
-		// NOTE(Peter): If you get an exception in this function it's most likely because you're using a Native only debugger type in Visual Studio
+		// NOTE: If you get an exception in this function it's most likely because you're using a Native only debugger type in Visual Studio
 		//				and it's catching a C# exception even though it shouldn't. I recommend switching the debugger type to Mixed (.NET Core)
-		//				which should be the default for Hazelnut, or simply press "Continue" until it works.
+		//				which should be the default for the project, or simply press "Continue" until it works.
 		//				This is a problem with the Visual Studio debugger and nothing we can change.
 		auto methodName = String::New(InMethodName);
 		s_ManagedFunctions.InvokeMethodFptr(m_Handle, methodName, InParameters, InParameterTypes, static_cast<int32_t>(InLength));
 		String::Free(methodName);
 	}
 
-	void ManagedObject::InvokeMethodRetInternal(std::string_view InMethodName, const void** InParameters, const ManagedType* InParameterTypes, size_t InLength, void* InResultStorage) const
+	void ManagedObject::InvokeMethodRetInternal(std::string_view InMethodName, const void** InParameters,
+        const ManagedType* InParameterTypes, size_t InLength, void* InResultStorage) const
 	{
 		auto methodName = String::New(InMethodName);
-		s_ManagedFunctions.InvokeMethodRetFptr(m_Handle, methodName, InParameters, InParameterTypes, static_cast<int32_t>(InLength), InResultStorage);
+		s_ManagedFunctions.InvokeMethodRetFptr(m_Handle, methodName, InParameters, InParameterTypes,
+            static_cast<int32_t>(InLength), InResultStorage);
+
 		String::Free(methodName);
 	}
 
@@ -75,6 +79,5 @@ namespace Coral {
 		m_Handle = nullptr;
 		m_Type = nullptr;
 	}
-
 }
 

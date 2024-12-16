@@ -1,8 +1,8 @@
 #include "TypeCache.hpp"
 #include "Type.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	TypeCache& TypeCache::Get()
 	{
 		static TypeCache s_Instance;
@@ -34,5 +34,4 @@ namespace Coral {
 		m_NameCache.clear();
 		m_IDCache.clear();
 	}
-
 }

@@ -1,11 +1,11 @@
-﻿#pragma once
+#pragma once
 
 #include "Core.hpp"
 #include "Utility.hpp"
 #include "String.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	class ManagedAssembly;
 	class Type;
 
@@ -23,7 +23,9 @@ namespace Coral {
 			{
 				const void* parameterValues[parameterCount];
 				ManagedType parameterTypes[parameterCount];
-				AddToArray<TArgs...>(parameterValues, parameterTypes, std::forward<TArgs>(InParameters)..., std::make_index_sequence<parameterCount> {});
+				AddToArray<TArgs...>(parameterValues, parameterTypes, std::forward<TArgs>(InParameters)...,
+                    std::make_index_sequence<parameterCount> {});
+
 				InvokeMethodRetInternal(InMethodName, parameterValues, parameterTypes, parameterCount, &result);
 			}
 			else
@@ -43,7 +45,9 @@ namespace Coral {
 			{
 				const void* parameterValues[parameterCount];
 				ManagedType parameterTypes[parameterCount];
-				AddToArray<TArgs...>(parameterValues, parameterTypes, std::forward<TArgs>(InParameters)..., std::make_index_sequence<parameterCount> {});
+				AddToArray<TArgs...>(parameterValues, parameterTypes, std::forward<TArgs>(InParameters)...,
+                    std::make_index_sequence<parameterCount> {});
+
 				InvokeMethodInternal(InMethodName, parameterValues, parameterTypes, parameterCount);
 			}
 			else
@@ -123,19 +127,18 @@ namespace Coral {
 		void Destroy();
 
 		bool IsValid() const { return m_Handle != nullptr && m_Type != nullptr; }
-
 	private:
-		void InvokeMethodInternal(std::string_view InMethodName, const void** InParameters, const ManagedType* InParameterTypes, size_t InLength) const;
-		void InvokeMethodRetInternal(std::string_view InMethodName, const void** InParameters, const ManagedType* InParameterTypes, size_t InLength, void* InResultStorage) const;
+		void InvokeMethodInternal(std::string_view InMethodName, const void** InParameters,
+            const ManagedType* InParameterTypes, size_t InLength) const;
 
+		void InvokeMethodRetInternal(std::string_view InMethodName, const void** InParameters,
+            const ManagedType* InParameterTypes, size_t InLength, void* InResultStorage) const;
 	private:
 		void* m_Handle = nullptr;
 		const Type* m_Type;
-
 	private:
 		friend class ManagedAssembly;
 		friend class Type;
 	};
-	
 }
 

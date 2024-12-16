@@ -3,8 +3,8 @@
 #include "Core.hpp"
 #include "String.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	class Type;
 
 	class Attribute
@@ -35,10 +35,8 @@ namespace Coral {
 			GetFieldValueInternal(InFieldName, &result);
 			return result;
 		}
-
 	private:
 		void GetFieldValueInternal(std::string_view InFieldName, void* OutValue) const;
-
 	private:
 		ManagedHandle m_Handle = -1;
 		Type* m_Type = nullptr;
@@ -48,5 +46,4 @@ namespace Coral {
 		friend class FieldInfo;
 		friend class PropertyInfo;
 	};
-
 }

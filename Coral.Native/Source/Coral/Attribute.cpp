@@ -4,8 +4,8 @@
 #include "TypeCache.hpp"
 #include "String.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	Type& Attribute::GetType()
 	{
 		if (!m_Type)
@@ -24,5 +24,4 @@ namespace Coral {
 		s_ManagedFunctions.GetAttributeFieldValueFptr(m_Handle, fieldName, OutValue);
 		String::Free(fieldName);
 	}
-
 }

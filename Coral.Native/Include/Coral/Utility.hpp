@@ -2,29 +2,13 @@
 
 #include "Core.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	enum class ManagedType
 	{
 		Unknown,
-
-		SByte,
-		Byte,
-		Short,
-		UShort,
-		Int,
-		UInt,
-		Long,
-		ULong,
-
-		Float,
-		Double,
-
-		Bool,
-
-		String,
-
-		Pointer,
+		SByte, Byte, Short, UShort, Int, UInt,
+        Long, ULong, Float,Double, Bool, String, Pointer,
 	};
 
 	template<typename TArg>
@@ -61,7 +45,8 @@ namespace Coral {
 	}
 
 	template <typename TArg, size_t TIndex>
-	inline void AddToArrayI(const void** InArgumentsArr, ManagedType* InParameterTypes, TArg&& InArg)
+	inline void AddToArrayI(const void** InArgumentsArr,
+        ManagedType* InParameterTypes, TArg&& InArg)
 	{
 		InParameterTypes[TIndex] = GetManagedType<std::remove_reference_t<TArg>>();
 
@@ -76,9 +61,9 @@ namespace Coral {
 	}
 
 	template <typename... TArgs, size_t... TIndices>
-	inline void AddToArray(const void** InArgumentsArr, ManagedType* InParameterTypes, TArgs&&... InArgs, const std::index_sequence<TIndices...>&)
+	inline void AddToArray(const void** InArgumentsArr, ManagedType* InParameterTypes,
+        TArgs&&... InArgs, const std::index_sequence<TIndices...>&)
 	{
 		(AddToArrayI<TArgs, TIndices>(InArgumentsArr, InParameterTypes, std::forward<TArgs>(InArgs)), ...);
 	}
-
 }

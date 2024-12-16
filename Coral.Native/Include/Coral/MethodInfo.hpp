@@ -3,8 +3,8 @@
 #include "Core.hpp"
 #include "String.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	class Type;
 	class Attribute;
 
@@ -19,7 +19,6 @@ namespace Coral {
 		TypeAccessibility GetAccessibility() const;
 
 		std::vector<Attribute> GetAttributes() const;
-
 	private:
 		ManagedHandle m_Handle = -1;
 		Type* m_ReturnType = nullptr;
@@ -27,5 +26,4 @@ namespace Coral {
 
 		friend class Type;
 	};
-
 }

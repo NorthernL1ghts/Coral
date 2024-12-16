@@ -7,8 +7,8 @@
 
 #include <functional>
 
-namespace Coral {
-
+namespace Coral
+{
 	using ExceptionCallbackFn = std::function<void(std::string_view)>;
 
 	struct HostSettings
@@ -26,10 +26,7 @@ namespace Coral {
 
 	enum class CoralInitStatus
 	{
-		Success,
-		CoralManagedNotFound,
-		CoralManagedInitError,
-		DotNetNotFound,
+		Success, CoralManagedNotFound, CoralManagedInitError, DotNetNotFound,
 	};
 
 	class HostInstance
@@ -46,14 +43,15 @@ namespace Coral {
 		bool InitializeCoralManaged();
 		void LoadCoralFunctions();
 
-		void* LoadCoralManagedFunctionPtr(const std::filesystem::path& InAssemblyPath, const CharType* InTypeName, const CharType* InMethodName, const CharType* InDelegateType = CORAL_UNMANAGED_CALLERS_ONLY) const;
+		void* LoadCoralManagedFunctionPtr(const std::filesystem::path& InAssemblyPath, const CharType* InTypeName,
+            const CharType* InMethodName, const CharType* InDelegateType = CORAL_UNMANAGED_CALLERS_ONLY) const;
 
 		template<typename TFunc>
-		TFunc LoadCoralManagedFunctionPtr(const CharType* InTypeName, const CharType* InMethodName, const CharType* InDelegateType = CORAL_UNMANAGED_CALLERS_ONLY) const
+		TFunc LoadCoralManagedFunctionPtr(const CharType* InTypeName, const CharType* InMethodName,
+            const CharType* InDelegateType = CORAL_UNMANAGED_CALLERS_ONLY) const
 		{
 			return (TFunc)LoadCoralManagedFunctionPtr(m_CoralManagedAssemblyPath, InTypeName, InMethodName, InDelegateType);
 		}
-
 	private:
 		HostSettings m_Settings;
 		std::filesystem::path m_CoralManagedAssemblyPath;
@@ -62,5 +60,4 @@ namespace Coral {
 
 		friend class AssemblyLoadContext;
 	};
-
 }

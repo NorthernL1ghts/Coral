@@ -32,18 +32,13 @@
 #define CORAL_DOTNET_TARGET_VERSION_MAJOR_STR '8'
 #define CORAL_UNMANAGED_CALLERS_ONLY ((const CharType*)-1)
 
-namespace Coral {
-
+namespace Coral
+{
 	using Bool32 = uint32_t;
 
 	enum class TypeAccessibility
 	{
-		Public,
-		Private,
-		Protected,
-		Internal,
-		ProtectedPublic,
-		PrivateProtected
+		Public, Private, Protected, Internal, ProtectedPublic, PrivateProtected
 	};
 
 	using TypeId = int32_t;
@@ -54,5 +49,4 @@ namespace Coral {
 		const CharType* Name;
 		void* NativeFunctionPtr;
 	};
-
 }

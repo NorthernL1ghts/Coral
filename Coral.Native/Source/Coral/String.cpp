@@ -3,8 +3,8 @@
 #include "Memory.hpp"
 #include "Verify.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	String String::New(const char* InString)
 	{
 		String result;
@@ -83,5 +83,4 @@ namespace Coral {
 		return strcmp(m_String, InOther.data()) == 0;
 #endif
 	}
-
 }

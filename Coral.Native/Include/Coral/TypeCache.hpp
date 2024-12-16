@@ -3,8 +3,8 @@
 #include "Core.hpp"
 #include "StableVector.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	class Type;
 
 	class TypeCache
@@ -17,11 +17,9 @@ namespace Coral {
 		Type* GetTypeByID(TypeId InTypeID) const;
 
 		void Clear();
-
 	private:
 		StableVector<Type> m_Types;
 		std::unordered_map<std::string, Type*> m_NameCache;
 		std::unordered_map<TypeId, Type*> m_IDCache;
 	};
-
 }

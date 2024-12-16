@@ -3,8 +3,8 @@
 #include "Core.hpp"
 #include "String.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	struct UnmanagedArray;
 	enum class AssemblyLoadStatus;
 	class ManagedObject;
@@ -158,5 +158,4 @@ namespace Coral {
 	};
 
 	inline ManagedFunctions s_ManagedFunctions;
-
 }

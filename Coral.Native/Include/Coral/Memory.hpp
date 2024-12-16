@@ -2,8 +2,8 @@
 
 #include "Core.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	struct Memory
 	{
 		static void* AllocHGlobal(size_t InSize);
@@ -11,7 +11,5 @@ namespace Coral {
 
 		static CharType* StringToCoTaskMemAuto(StringView InString);
 		static void FreeCoTaskMem(void* InMemory);
-
 	};
-
 }

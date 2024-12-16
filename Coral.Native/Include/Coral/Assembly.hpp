@@ -4,16 +4,11 @@
 
 #include "StableVector.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	enum class AssemblyLoadStatus
 	{
-		Success,
-		FileNotFound,
-		FileLoadFailure,
-		InvalidFilePath,
-		InvalidAssembly,
-		UnknownError
+		Success, FileNotFound, FileLoadFailure, InvalidFilePath, InvalidAssembly, UnknownError
 	};
 
 	class HostInstance;
@@ -66,5 +61,4 @@ namespace Coral {
 
 		friend class HostInstance;
 	};
-
 }

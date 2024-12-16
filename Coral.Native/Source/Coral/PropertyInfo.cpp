@@ -4,8 +4,8 @@
 #include "CoralManagedFunctions.hpp"
 #include "TypeCache.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	String PropertyInfo::GetName() const
 	{
 		return s_ManagedFunctions.GetPropertyInfoNameFptr(m_Handle);
@@ -36,5 +36,4 @@ namespace Coral {
 
 		return result;
 	}
-
 }

@@ -5,9 +5,10 @@
 #include "StringHelper.hpp"
 #include "TypeCache.hpp"
 
-namespace Coral {
-
-	void ManagedAssembly::AddInternalCall(std::string_view InClassName, std::string_view InVariableName, void* InFunctionPtr)
+namespace Coral
+{
+	void ManagedAssembly::AddInternalCall(std::string_view InClassName,
+        std::string_view InVariableName, void* InFunctionPtr)
 	{
 		CORAL_VERIFY(InFunctionPtr != nullptr);
 
@@ -103,5 +104,4 @@ namespace Coral {
 
 		return result;
 	}
-
 }

@@ -2,8 +2,8 @@
 
 #include "Core.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	class StringHelper
 	{
 	public:
@@ -15,5 +15,4 @@ namespace Coral {
 		static std::string ConvertWideToUtf8(std::string_view InString);
 	#endif
 	};
-
 }

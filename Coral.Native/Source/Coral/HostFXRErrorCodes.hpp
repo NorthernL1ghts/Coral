@@ -1,7 +1,7 @@
 #pragma once
 
-namespace Coral {
-
+namespace Coral
+{
 	enum StatusCode
 	{
 		// Success
@@ -50,5 +50,4 @@ namespace Coral {
 		HostApiUnsupportedScenario = 0x800080a6,
 		HostFeatureDisabled = 0x800080a7,
 	};
-
 }

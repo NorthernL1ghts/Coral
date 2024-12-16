@@ -4,8 +4,8 @@
 
 #include <functional>
 
-namespace Coral {
-
+namespace Coral
+{
 	enum class MessageLevel
 	{
 		Info = 1 << 0,
@@ -38,5 +38,4 @@ namespace Coral {
 	}
 
 	using MessageCallbackFn = std::function<void(std::string_view, MessageLevel)>;
-
 }

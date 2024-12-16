@@ -1,8 +1,8 @@
-﻿#include "GC.hpp"
+#include "GC.hpp"
 #include "CoralManagedFunctions.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	void GC::Collect()
 	{
 		Collect(-1, GCCollectionMode::Default, true, false);
@@ -16,6 +16,5 @@ namespace Coral {
 	void GC::WaitForPendingFinalizers()
 	{
 		s_ManagedFunctions.WaitForPendingFinalizersFptr();
-	}
-	
+	}	
 }

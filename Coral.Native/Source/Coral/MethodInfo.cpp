@@ -4,8 +4,8 @@
 #include "Attribute.hpp"
 #include "TypeCache.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	String MethodInfo::GetName() const
 	{
 		return s_ManagedFunctions.GetMethodInfoNameFptr(m_Handle);
@@ -63,5 +63,4 @@ namespace Coral {
 
 		return result;
 	}
-
 }

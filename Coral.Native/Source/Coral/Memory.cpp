@@ -1,7 +1,7 @@
 #include "Memory.hpp"
 
-namespace Coral {
-
+namespace Coral
+{
 	void* Memory::AllocHGlobal(size_t InSize)
 	{
 #if defined(_WIN32)
@@ -54,5 +54,4 @@ namespace Coral {
 		FreeHGlobal(InMemory);
 #endif
 	}
-
 }
