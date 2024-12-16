@@ -1,5 +1,7 @@
 # Coral
 
+![Coral's Logo](Branding/Images/CoralLogo.png)
+
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey.svg)
