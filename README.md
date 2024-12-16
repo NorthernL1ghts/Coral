@@ -33,11 +33,12 @@ Coral uses the [premake](https://premake.github.io/) meta-build system to genera
 2. Open a terminal and navigate to the root directory of Coral.
 3. Run the following command:
 
-    ```sh
+    ````sh
     premake5 [action]
-    ```
+    ```d
 
     where `action` is one of the supported actions in premake.
+    ````
 
 ## Scripts
 
