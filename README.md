@@ -35,7 +35,7 @@ Coral uses the [premake](https://premake.github.io/) meta-build system to genera
 
     ````sh
     premake5 [action]
-    ```d
+    ```
 
     where `action` is one of the supported actions in premake.
     ````
