@@ -49,7 +49,6 @@ public struct NativeArray<T> : IDisposable, IEnumerable<T>
     // NOTE (NorthernL1ghts): Whilst this does work, it has been pointed out to me that this is not the best way to handle this.
     // This is because the GC will not be able to track the array and it will not be able to be collected.
     // Also, native array type isn't allocating memory in alignment or so it seem's. Could lead to runtime-expection err.
-
     /*
     public NativeArray(int InLength)
     {
@@ -104,8 +103,6 @@ public struct NativeArray<T> : IDisposable, IEnumerable<T>
         return data.ToArray();
     }
 
-
-
     // NOTE (NorthernL1ghts): Freeing aligned memory with NativeMemory.Free instead of NativeMemory.AlignedFree causes an exception. 
     // This might still be true for other unaligned free methods. 
     // Make sure to use NativeMemory.AlignedFree when freeing aligned memory.
@@ -126,12 +123,6 @@ public struct NativeArray<T> : IDisposable, IEnumerable<T>
 
         return data.ToArray();
     }
-
-    ~NativeArray()
-    {
-        NativeMemory.AlignedFree(m_NativeArray);
-    }
-
 
     public ReadOnlySpan<T> ToReadOnlySpan() => ToSpan();
 
