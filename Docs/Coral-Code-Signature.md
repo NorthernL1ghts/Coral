@@ -1,5 +1,8 @@
 # Coral Code Signature
 
+### Introduction
+- Welcome to the Coral project, you may notice that the codebase uses numerous programming languages and syntaxes. This document aims to provide a comprehensive guide to the coding standards and conventions used across the Coral project. Coral's main language is C++ mainly because that is the language I am most comfortable and since we're using .NET this makes the most sense. We also use C# for InterallCalls as well as C. The build system of choice is 'Premake' which uses Lua but I have made a script for both Linux / MacOS and Windows so you don't have to worry about creating a build script yourself.
+
 ### Layout / Style
 
 To maintain code consistency and readability, the following naming conventions are used across the codebase:
