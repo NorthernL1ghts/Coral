@@ -52,8 +52,7 @@ internal static class ManagedObject
 
 		public override int GetHashCode()
 		{
-			// NOTE: Josh Bloch's Hash
-            // (from https://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-overriding-gethashcode)
+			// (from https://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-overriding-gethashcode)
 			unchecked
 			{
 				int hash = 17;
@@ -90,7 +89,7 @@ internal static class ManagedObject
 			{
 				ReadOnlySpan<ConstructorInfo> constructors = currentType.GetConstructors(BindingFlags.NonPublic
                     | BindingFlags.Public | BindingFlags.Instance);
-				
+
 				constructor = TypeInterface.FindSuitableMethod(".ctor", InParameterTypes, InParameterCount, constructors);
 
 				if (constructor != null)
@@ -279,7 +278,7 @@ internal static class ManagedObject
 			HandleException(ex);
 		}
 	}
-	
+
 	[UnmanagedCallersOnly]
 	internal static unsafe void InvokeMethodRet(IntPtr InObjectHandle, NativeString InMethodName,
         IntPtr InParameters, ManagedType* InParameterTypes, int InParameterCount, IntPtr InResultStorage)
@@ -300,7 +299,7 @@ internal static class ManagedObject
                 InParameterCount, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
 			var methodParameters = Marshalling.MarshalParameterArray(InParameters, InParameterCount, methodInfo);
-			
+
 			object? value = methodInfo.Invoke(target, methodParameters);
 
 			if (value == null)
@@ -405,7 +404,7 @@ internal static class ManagedObject
 			var targetType = target.GetType();
 			var propertyInfo = targetType.GetProperty(InPropertyName!, BindingFlags.Public |
                 BindingFlags.NonPublic | BindingFlags.Instance);
-		
+
 			if (propertyInfo == null)
 			{
 				LogMessage($"Failed to find property '{InPropertyName}' in type '{targetType.FullName}'", MessageLevel.Error);
