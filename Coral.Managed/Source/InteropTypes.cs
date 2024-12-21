@@ -9,248 +9,289 @@ namespace Coral.Managed.Interop;
 
 public sealed class NativeArrayEnumerator<T> : IEnumerator<T>
 {
-	private readonly T[] m_Elements;
-	private int m_Index = -1;
+    private readonly T[] m_Elements;
+    private int m_Index = -1;
 
-	public NativeArrayEnumerator(T[] elements)
-	{
-		m_Elements = elements;
-	}
+    public NativeArrayEnumerator(T[] elements)
+    {
+        m_Elements = elements;
+    }
 
-	public bool MoveNext()
-	{
-		m_Index++;
-		return m_Index < m_Elements.Length;
-	}
+    public bool MoveNext()
+    {
+        m_Index++;
+        return m_Index < m_Elements.Length;
+    }
 
-	void IEnumerator.Reset() => m_Index = -1;
-	void IDisposable.Dispose()
-	{
-		m_Index = -1;
-		GC.SuppressFinalize(this);
-	}
+    void IEnumerator.Reset() => m_Index = -1;
+    void IDisposable.Dispose()
+    {
+        m_Index = -1;
+        GC.SuppressFinalize(this);
+    }
 
-	object IEnumerator.Current => Current!;
+    object IEnumerator.Current => Current!;
 
-	public T Current => m_Elements[m_Index];
+    public T Current => m_Elements[m_Index];
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct NativeArray<T> : IDisposable, IEnumerable<T>
 {
-	private IntPtr m_NativeArray;
-	private IntPtr m_ArrayHandle;
-	private int m_NativeLength;
+    private IntPtr m_NativeArray;
+    private IntPtr m_ArrayHandle;
+    private int m_NativeLength;
 
-	private Bool32 m_IsDisposed;
+    private Bool32 m_IsDisposed;
 
-	public int Length => m_NativeLength;
+    public int Length => m_NativeLength;
 
-	public NativeArray(int InLength)
-	{
-		m_NativeArray = Marshal.AllocHGlobal(InLength * Marshal.SizeOf<T>());
-		m_NativeLength = InLength;
-	}
+    // NOTE (NorthernL1ghts): Whilst this does work, it has been pointed out to me that this is not the best way to handle this.
+    // This is because the GC will not be able to track the array and it will not be able to be collected.
+    // Also, native array type isn't allocating memory in alignment or so it seem's. Could lead to runtime-expection err.
 
-	public NativeArray([DisallowNull] T?[] InValues)
-	{
-		m_NativeArray = Marshal.AllocHGlobal(InValues.Length * Marshal.SizeOf<T>());
-		m_NativeLength = InValues.Length;
+    /*
+    public NativeArray(int InLength)
+    {
+        m_NativeArray = Marshal.AllocHGlobal(InLength * Marshal.SizeOf<T>());
+        m_NativeLength = InLength;
+    } */
 
-		for (int i = 0; i < m_NativeLength; i++)
-		{
-			var elem = InValues[i];
+    public NativeArray(int InLength)
+    {
+        m_NativeArray = NativeMemory.AlignedAlloc(InLength * (nuint)Marshal.SizeOf<T>(), (nuint)Alignment);
+        m_NativeLength = InLength;
+    }
 
-			if (elem == null)
-				continue;
+    // Add a destructor to free the allocated memory
+    ~NativeArray()
+    {
+        NativeMemory.AlignedFree(m_NativeArray);
+    }
 
-			Marshal.StructureToPtr(elem, IntPtr.Add(m_NativeArray, i * Marshal.SizeOf<T>()), false);
-		}
-	}
+    public NativeArray([DisallowNull] T?[] InValues)
+    {
+        m_NativeArray = Marshal.AllocHGlobal(InValues.Length * Marshal.SizeOf<T>());
+        m_NativeLength = InValues.Length;
 
-	internal NativeArray(IntPtr InArray, IntPtr InHandle, int InLength)
-	{
-		m_NativeArray = InArray;
-		m_ArrayHandle = InHandle;
-		m_NativeLength = InLength;
-	}
+        for (int i = 0; i < m_NativeLength; i++)
+        {
+            var elem = InValues[i];
 
-	public T[] ToArray()
-	{
-		Span<T> data = Span<T>.Empty;
+            if (elem == null)
+                continue;
 
-		if (m_NativeArray != IntPtr.Zero && m_NativeLength > 0)
-		{
-			unsafe { data = new Span<T>(m_NativeArray.ToPointer(), m_NativeLength); }
-		}
+            Marshal.StructureToPtr(elem, IntPtr.Add(m_NativeArray, i * Marshal.SizeOf<T>()), false);
+        }
+    }
 
-		return data.ToArray();
-	}
+    internal NativeArray(IntPtr InArray, IntPtr InHandle, int InLength)
+    {
+        m_NativeArray = InArray;
+        m_ArrayHandle = InHandle;
+        m_NativeLength = InLength;
+    }
 
-	public Span<T> ToSpan()
-	{
-		unsafe { return new Span<T>(m_NativeArray.ToPointer(), m_NativeLength); }
-	}
+    public T[] ToArray()
+    {
+        Span<T> data = Span<T>.Empty;
 
-	public ReadOnlySpan<T> ToReadOnlySpan() => ToSpan();
+        if (m_NativeArray != IntPtr.Zero && m_NativeLength > 0)
+        {
+            unsafe { data = new Span<T>(m_NativeArray.ToPointer(), m_NativeLength); }
+        }
 
-	public void Dispose()
-	{
-		if (!m_IsDisposed && m_ArrayHandle == IntPtr.Zero)
-		{
-			Marshal.FreeHGlobal(m_NativeArray);
-			m_IsDisposed = true;
-		}
+        return data.ToArray();
+    }
 
-		GC.SuppressFinalize(this);
-	}
 
-	public IEnumerator<T> GetEnumerator() => new NativeArrayEnumerator<T>(this);
-	IEnumerator IEnumerable.GetEnumerator() => new NativeArrayEnumerator<T>(this);
 
-	public T? this[int InIndex]
-	{
-		get => Marshal.PtrToStructure<T>(IntPtr.Add(m_NativeArray, InIndex * Marshal.SizeOf<T>()));
-		set => Marshal.StructureToPtr<T>(value!, IntPtr.Add(m_NativeArray, InIndex * Marshal.SizeOf<T>()), false);
-	}
+    // NOTE (NorthernL1ghts): Freeing aligned memory with NativeMemory.Free instead of NativeMemory.AlignedFree causes an exception. 
+    // This might still be true for other unaligned free methods. 
+    // Make sure to use NativeMemory.AlignedFree when freeing aligned memory.
+    /*
+    public Span<T> ToSpan()
+    {
+        unsafe { return new Span<T>(m_NativeArray.ToPointer(), m_NativeLength); }
+    } */
 
-	public static NativeArray<T> Map(T[] array)
-	{
-		var handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-		return new(handle.AddrOfPinnedObject(), GCHandle.ToIntPtr(handle), array.Length);
-	}
+    public T[] ToArray()
+    {
+        Span<T> data = Span<T>.Empty;
 
-	public static void Unmap(ref NativeArray<T> array)
-	{
-		GCHandle.FromIntPtr(array.m_ArrayHandle).Free();
-		array.m_NativeArray = IntPtr.Zero;
-		array.m_ArrayHandle = IntPtr.Zero;
-		array.m_NativeLength = 0;
-	}
+        if (m_NativeArray != IntPtr.Zero && m_NativeLength > 0)
+        {
+            unsafe { data = new Span<T>(m_NativeArray.ToPointer(), m_NativeLength); }
+        }
 
-	public static implicit operator T[](NativeArray<T> InArray) => InArray.ToArray();
-	public static implicit operator NativeArray<T>(T[] InArray) => new(InArray);
+        return data.ToArray();
+    }
+
+    ~NativeArray()
+    {
+        NativeMemory.AlignedFree(m_NativeArray);
+    }
+
+
+    public ReadOnlySpan<T> ToReadOnlySpan() => ToSpan();
+
+    public void Dispose()
+    {
+        if (!m_IsDisposed && m_ArrayHandle == IntPtr.Zero)
+        {
+            Marshal.FreeHGlobal(m_NativeArray);
+            m_IsDisposed = true;
+        }
+
+        GC.SuppressFinalize(this);
+    }
+
+    public IEnumerator<T> GetEnumerator() => new NativeArrayEnumerator<T>(this);
+    IEnumerator IEnumerable.GetEnumerator() => new NativeArrayEnumerator<T>(this);
+
+    public T? this[int InIndex]
+    {
+        get => Marshal.PtrToStructure<T>(IntPtr.Add(m_NativeArray, InIndex * Marshal.SizeOf<T>()));
+        set => Marshal.StructureToPtr<T>(value!, IntPtr.Add(m_NativeArray, InIndex * Marshal.SizeOf<T>()), false);
+    }
+
+    public static NativeArray<T> Map(T[] array)
+    {
+        var handle = GCHandle.Alloc(array, GCHandleType.Pinned);
+        return new(handle.AddrOfPinnedObject(), GCHandle.ToIntPtr(handle), array.Length);
+    }
+
+    public static void Unmap(ref NativeArray<T> array)
+    {
+        GCHandle.FromIntPtr(array.m_ArrayHandle).Free();
+        array.m_NativeArray = IntPtr.Zero;
+        array.m_ArrayHandle = IntPtr.Zero;
+        array.m_NativeLength = 0;
+    }
+
+    public static implicit operator T[](NativeArray<T> InArray) => InArray.ToArray();
+    public static implicit operator NativeArray<T>(T[] InArray) => new(InArray);
 }
 
 public static class ArrayStorage
 {
-	private static Dictionary<int, GCHandle> s_FieldArrays = new();
+    private static Dictionary<int, GCHandle> s_FieldArrays = new();
 
-	public static bool HasFieldArray(object? InTarget, MemberInfo? InArrayMemberInfo)
-	{
-		if (InArrayMemberInfo == null)
-			return false;
+    public static bool HasFieldArray(object? InTarget, MemberInfo? InArrayMemberInfo)
+    {
+        if (InArrayMemberInfo == null)
+            return false;
 
-		int arrayId = InArrayMemberInfo.GetHashCode();
-		arrayId += InTarget != null ? InTarget.GetHashCode() : 0;
-		return s_FieldArrays.ContainsKey(arrayId);
-	}
+        int arrayId = InArrayMemberInfo.GetHashCode();
+        arrayId += InTarget != null ? InTarget.GetHashCode() : 0;
+        return s_FieldArrays.ContainsKey(arrayId);
+    }
 
-	public static GCHandle? GetFieldArray(object? InTarget, object? InValue, MemberInfo? InArrayMemberInfo)
-	{
-		if (InArrayMemberInfo == null)
-			return null;
+    public static GCHandle? GetFieldArray(object? InTarget, object? InValue, MemberInfo? InArrayMemberInfo)
+    {
+        if (InArrayMemberInfo == null)
+            return null;
 
-		int arrayId = InArrayMemberInfo.GetHashCode();
-		arrayId += InTarget != null ? InTarget.GetHashCode() : 0;
+        int arrayId = InArrayMemberInfo.GetHashCode();
+        arrayId += InTarget != null ? InTarget.GetHashCode() : 0;
 
-		if (!s_FieldArrays.TryGetValue(arrayId, out var arrayHandle))
-		{
-			var arrayObject = InValue as Array;
-			arrayHandle = GCHandle.Alloc(arrayObject, GCHandleType.Pinned);
-			s_FieldArrays.Add(arrayId, arrayHandle);
-		}
+        if (!s_FieldArrays.TryGetValue(arrayId, out var arrayHandle))
+        {
+            var arrayObject = InValue as Array;
+            arrayHandle = GCHandle.Alloc(arrayObject, GCHandleType.Pinned);
+            s_FieldArrays.Add(arrayId, arrayHandle);
+        }
 
-		return arrayHandle;
-	}
+        return arrayHandle;
+    }
 }
 
 [StructLayout(LayoutKind.Sequential)]
 public struct NativeInstance<T>
 {
-	private readonly IntPtr m_Handle;
-	private readonly IntPtr m_Unused;
+    private readonly IntPtr m_Handle;
+    private readonly IntPtr m_Unused;
 
-	private NativeInstance(IntPtr handle)
-	{
-		m_Handle = handle;
-		m_Unused = IntPtr.Zero;
-	}
+    private NativeInstance(IntPtr handle)
+    {
+        m_Handle = handle;
+        m_Unused = IntPtr.Zero;
+    }
 
-	public T? Get()
-	{
-		if (m_Handle == IntPtr.Zero)
-			return default;
+    public T? Get()
+    {
+        if (m_Handle == IntPtr.Zero)
+            return default;
 
-		GCHandle handle = GCHandle.FromIntPtr(m_Handle);
+        GCHandle handle = GCHandle.FromIntPtr(m_Handle);
 
-		if (!(handle.Target is T))
-			return default;
-		
-		return (T)handle.Target;
-	}
+        if (!(handle.Target is T))
+            return default;
 
-	public static implicit operator NativeInstance<T>(T instance)
-	{
-		return new(GCHandle.ToIntPtr(GCHandle.Alloc(instance, GCHandleType.Pinned)));
-	}
+        return (T)handle.Target;
+    }
 
-	public static implicit operator T?(NativeInstance<T> InInstance)
-	{
-		return InInstance.Get();
-	}
+    public static implicit operator NativeInstance<T>(T instance)
+    {
+        return new(GCHandle.ToIntPtr(GCHandle.Alloc(instance, GCHandleType.Pinned)));
+    }
+
+    public static implicit operator T?(NativeInstance<T> InInstance)
+    {
+        return InInstance.Get();
+    }
 }
 
 [StructLayout(LayoutKind.Sequential)]
 public struct NativeString : IDisposable
 {
-	internal IntPtr m_NativeString;
-	private Bool32 m_IsDisposed;
+    internal IntPtr m_NativeString;
+    private Bool32 m_IsDisposed;
 
-	public void Dispose()
-	{
-		if (!m_IsDisposed)
-		{
-			if (m_NativeString != IntPtr.Zero)
-			{
-				Marshal.FreeCoTaskMem(m_NativeString);
-				m_NativeString = IntPtr.Zero;
-			}
+    public void Dispose()
+    {
+        if (!m_IsDisposed)
+        {
+            if (m_NativeString != IntPtr.Zero)
+            {
+                Marshal.FreeCoTaskMem(m_NativeString);
+                m_NativeString = IntPtr.Zero;
+            }
 
-			m_IsDisposed = true;
-		}
+            m_IsDisposed = true;
+        }
 
-		GC.SuppressFinalize(this);
-	}
+        GC.SuppressFinalize(this);
+    }
 
-	public override string? ToString() => this;
+    public override string? ToString() => this;
 
-	public static NativeString Null() => new NativeString(){ m_NativeString = IntPtr.Zero };
+    public static NativeString Null() => new NativeString() { m_NativeString = IntPtr.Zero };
 
-	public static implicit operator NativeString(string? InString) => new(){ m_NativeString = Marshal.StringToCoTaskMemAuto(InString) };
-	public static implicit operator string?(NativeString InString) => Marshal.PtrToStringAuto(InString.m_NativeString);
+    public static implicit operator NativeString(string? InString) => new() { m_NativeString = Marshal.StringToCoTaskMemAuto(InString) };
+    public static implicit operator string?(NativeString InString) => Marshal.PtrToStringAuto(InString.m_NativeString);
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct Bool32
 {
-	public uint Value { get; set; }
+    public uint Value { get; set; }
 
-	public static implicit operator Bool32(bool InValue) => new() { Value = InValue ? 1u : 0u };
-	public static implicit operator bool(Bool32 InBool32) => InBool32.Value > 0;
+    public static implicit operator Bool32(bool InValue) => new() { Value = InValue ? 1u : 0u };
+    public static implicit operator bool(Bool32 InBool32) => InBool32.Value > 0;
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct ReflectionType
 {
-	private readonly int m_TypeId;
+    private readonly int m_TypeId;
 
-	public int ID => m_TypeId;
+    public int ID => m_TypeId;
 
-	public ReflectionType(int InTypeID)
-	{
-		m_TypeId = InTypeID;
-	}
+    public ReflectionType(int InTypeID)
+    {
+        m_TypeId = InTypeID;
+    }
 
-	public static implicit operator ReflectionType(Type? InType) => new(TypeInterface.s_CachedTypes.Add(InType));
+    public static implicit operator ReflectionType(Type? InType) => new(TypeInterface.s_CachedTypes.Add(InType));
 }
