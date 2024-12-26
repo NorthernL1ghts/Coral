@@ -33,6 +33,7 @@ public sealed class NativeArrayEnumerator<T> : IEnumerator<T>
     object IEnumerator.Current => Current!;
 
     public T Current => m_Elements[m_Index];
+
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -46,26 +47,10 @@ public struct NativeArray<T> : IDisposable, IEnumerable<T>
 
     public int Length => m_NativeLength;
 
-    // NOTE (NorthernL1ghts): Whilst this does work, it has been pointed out to me that this is not the best way to handle this.
-    // This is because the GC will not be able to track the array and it will not be able to be collected.
-    // Also, native array type isn't allocating memory in alignment or so it seem's. Could lead to runtime-expection err.
-    /*
     public NativeArray(int InLength)
     {
         m_NativeArray = Marshal.AllocHGlobal(InLength * Marshal.SizeOf<T>());
         m_NativeLength = InLength;
-    } */
-
-    public NativeArray(int InLength)
-    {
-        m_NativeArray = NativeMemory.AlignedAlloc(InLength * (nuint)Marshal.SizeOf<T>(), (nuint)Alignment);
-        m_NativeLength = InLength;
-    }
-
-    // Add a destructor to free the allocated memory
-    ~NativeArray()
-    {
-        NativeMemory.AlignedFree(m_NativeArray);
     }
 
     public NativeArray([DisallowNull] T?[] InValues)
@@ -103,25 +88,9 @@ public struct NativeArray<T> : IDisposable, IEnumerable<T>
         return data.ToArray();
     }
 
-    // NOTE (NorthernL1ghts): Freeing aligned memory with NativeMemory.Free instead of NativeMemory.AlignedFree causes an exception. 
-    // This might still be true for other unaligned free methods. 
-    // Make sure to use NativeMemory.AlignedFree when freeing aligned memory.
-    /*
     public Span<T> ToSpan()
     {
         unsafe { return new Span<T>(m_NativeArray.ToPointer(), m_NativeLength); }
-    } */
-
-    public T[] ToArray()
-    {
-        Span<T> data = Span<T>.Empty;
-
-        if (m_NativeArray != IntPtr.Zero && m_NativeLength > 0)
-        {
-            unsafe { data = new Span<T>(m_NativeArray.ToPointer(), m_NativeLength); }
-        }
-
-        return data.ToArray();
     }
 
     public ReadOnlySpan<T> ToReadOnlySpan() => ToSpan();
@@ -162,6 +131,7 @@ public struct NativeArray<T> : IDisposable, IEnumerable<T>
 
     public static implicit operator T[](NativeArray<T> InArray) => InArray.ToArray();
     public static implicit operator NativeArray<T>(T[] InArray) => new(InArray);
+
 }
 
 public static class ArrayStorage
@@ -285,4 +255,5 @@ public struct ReflectionType
     }
 
     public static implicit operator ReflectionType(Type? InType) => new(TypeInterface.s_CachedTypes.Add(InType));
+
 }

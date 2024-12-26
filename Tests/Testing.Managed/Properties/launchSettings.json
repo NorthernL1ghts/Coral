@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Testing.Managed": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
