@@ -30,7 +30,7 @@ float FloatMarshalIcall(float InValue) { return InValue * 2.0f; }
 double DoubleMarshalIcall(double InValue) { return InValue * 2.0; }
 bool BoolMarshalIcall(bool InValue)
 {
-	std::cout << "C++: " << (uint32_t)InValue << std::endl;
+	std::cout << "C++: " << (uint32_t)InValue << "\n";
 	return !InValue;
 }
 int32_t* IntPtrMarshalIcall(int32_t* InValue)
@@ -44,7 +44,7 @@ Coral::String StringMarshalIcall(Coral::String InStr)
 }
 void StringMarshalIcall2(Coral::String InStr)
 {
-	std::cout << std::string(InStr) << std::endl;
+	std::cout << std::string(InStr) << "\n";
 }
 bool TypeMarshalIcall(Coral::ReflectionType InReflectionType)
 {
@@ -147,7 +147,7 @@ void RegisterMemberMethodTests(Coral::HostInstance& InHost, Coral::ManagedObject
 		Coral::ScopedString str = InObject.InvokeMethod<Coral::String, Coral::String>("StringTest", Coral::String::New("Hello"));
 		return str == "Hello, World!";
 	});
-	
+
 	RegisterTest("DummyStructTest", [InObject]() mutable
 	{
 		DummyStruct value =
@@ -283,7 +283,7 @@ void RegisterFieldMarshalTests(Coral::HostInstance& InHost, Coral::ManagedObject
 		value = InObject.GetFieldValue<double>("DoubleFieldTest");
 		return value - 20.0 < 0.001;
 	});
-	
+
 	RegisterTest("BoolFieldTest", [InObject]() mutable
 	{
 		auto value = InObject.GetFieldValue<Coral::Bool32>("BoolFieldTest");
@@ -405,7 +405,7 @@ void RegisterFieldMarshalTests(Coral::HostInstance& InHost, Coral::ManagedObject
 		value = InObject.GetPropertyValue<double>("DoublePropertyTest");
 		return value - 20.0 < 0.001;
 	});
-	
+
 	RegisterTest("BoolPropertyTest", [InObject]() mutable
 	{
 		auto value = InObject.GetPropertyValue<Coral::Bool32>("BoolPropertyTest");
@@ -440,7 +440,7 @@ void RunTests()
 		}
 		else
 		{
-			std::cerr << "\033[1;31m[" << i + 1 << " / " << tests.size() << " (" << test.Name << "): Failed\033[0m\n"; 
+			std::cerr << "\033[1;31m[" << i + 1 << " / " << tests.size() << " (" << test.Name << "): Failed\033[0m\n";
 		}
 	}
 	std::cout << "[NativeTest]: Done. " << passedTests << " passed, " << tests.size() - passedTests  << " failed.\n";
@@ -486,7 +486,7 @@ int main(int argc, char** argv)
 	testsInstance.Destroy();
 
 	auto& fieldTestType = assembly.GetType("Testing.Managed.FieldMarshalTest");
-	std::cout << fieldTestType.IsAssignableTo(fieldTestType) << std::endl;
+	std::cout << fieldTestType.IsAssignableTo(fieldTestType) << "\n";
 
 	auto fieldTestObject = fieldTestType.CreateInstance();
 
@@ -514,7 +514,7 @@ int main(int argc, char** argv)
 			auto& attribType = attrib.GetType();
 
 			if (attribType.GetFullName() == "Testing.Managed.DummyAttribute")
-				std::cout << attrib.GetFieldValue<float>("SomeValue") << std::endl;
+				std::cout << attrib.GetFieldValue<float>("SomeValue") << "\n";
 		}
 	}
 
@@ -528,21 +528,21 @@ int main(int argc, char** argv)
 			auto& attribType = attrib.GetType();
 
 			if (attribType.GetFullName() == "Testing.Managed.DummyAttribute")
-				std::cout << attrib.GetFieldValue<float>("SomeValue") << std::endl;
+				std::cout << attrib.GetFieldValue<float>("SomeValue") << "\n";
 		}
 	}
-	
+
 	auto& memberMethodTestType = assembly.GetType("Testing.Managed.MemberMethodTest");
 
 	// for (auto methodInfo : memberMethodTestType.GetMethods())
 	// {
 	// 	auto& type = methodInfo.GetReturnType();
 	// 	auto accessibility = methodInfo.GetAccessibility();
-	// 	std::cout << methodInfo.GetName() << ", Returns: " << type.GetFullName() << std::endl;
+	// 	std::cout << methodInfo.GetName() << ", Returns: " << type.GetFullName() << "\n";
 	// 	const auto& parameterTypes = methodInfo.GetParameterTypes();
 	// 	for (const auto& paramType : parameterTypes)
 	// 	{
-	// 		std::cout << "\t" << paramType->GetFullName() << std::endl;
+	// 		std::cout << "\t" << paramType->GetFullName() << "\n";
 	// 	}
 
 	// 	auto attributes = methodInfo.GetAttributes();
@@ -551,7 +551,7 @@ int main(int argc, char** argv)
 	// 		auto& attribType = attrib.GetType();
 
 	// 		if (attribType.GetFullName() == "Testing.Managed.DummyAttribute")
-	// 			std::cout << attrib.GetFieldValue<float>("SomeValue") << std::endl;
+	// 			std::cout << attrib.GetFieldValue<float>("SomeValue") << "\n";
 	// 	}
 	// }
 

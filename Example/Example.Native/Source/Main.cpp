@@ -13,7 +13,7 @@
 
 void ExceptionCallback(std::string_view InMessage)
 {
-	std::cout << "Unhandled native exception: " << InMessage << std::endl;
+	std::cout << "Unhandled native exception: " << InMessage << "\n";
 }
 
 struct MyVec3
@@ -25,7 +25,7 @@ struct MyVec3
 
 void VectorAddIcall(MyVec3* InVec0, const MyVec3* InVec1)
 {
-	std::cout << "VectorAddIcall" << std::endl;
+	std::cout << "VectorAddIcall" << "\n";
 	InVec0->X += InVec1->X;
 	InVec0->Y += InVec1->Y;
 	InVec0->Z += InVec1->Z;
@@ -33,21 +33,21 @@ void VectorAddIcall(MyVec3* InVec0, const MyVec3* InVec1)
 
 void PrintStringIcall(Coral::String InString)
 {
-	std::cout << std::string(InString) << std::endl;
+	std::cout << std::string(InString) << "\n";
 }
 
 void NativeArrayIcall(Coral::Array<float> InValues)
 {
-	std::cout << "NativeArrayIcall" << std::endl;
+	std::cout << "NativeArrayIcall" << "\n";
 	for (auto value : InValues)
 	{
-		std::cout << value << std::endl;
+		std::cout << value << "\n";
 	}
 }
 
 Coral::Array<float> ArrayReturnIcall()
 {
-	std::cout << "ArrayReturnIcall" << std::endl;
+	std::cout << "ArrayReturnIcall" << "\n";
 	return Coral::Array<float>::New({ 10.0f, 5000.0f, 1000.0f });
 }
 
@@ -55,8 +55,7 @@ int main(int argc, char** argv)
 {
 	auto exeDir = std::filesystem::path(argv[0]).parent_path();
 	auto coralDir = exeDir.string();
-	Coral::HostSettings settings =
-	{
+	Coral::HostSettings settings = {
 		.CoralDirectory = coralDir,
 		.ExceptionCallback = ExceptionCallback
 	};
@@ -68,7 +67,7 @@ int main(int argc, char** argv)
 	auto assemblyPath = exeDir / "Example.Managed.dll";
 	auto& assembly = loadContext.LoadAssembly(assemblyPath.string());
 
-	assembly.AddInternalCall("Example.Managed.ExampleClass", "VectorAddIcall",   reinterpret_cast<void*>(&VectorAddIcall));
+	assembly.AddInternalCall("Example.Managed.ExampleClass", "VectorAddIcall", reinterpret_cast<void*>(&VectorAddIcall));
 	assembly.AddInternalCall("Example.Managed.ExampleClass", "PrintStringIcall", reinterpret_cast<void*>(&PrintStringIcall));
 	assembly.AddInternalCall("Example.Managed.ExampleClass", "NativeArrayIcall", reinterpret_cast<void*>(&NativeArrayIcall));
 	assembly.AddInternalCall("Example.Managed.ExampleClass", "ArrayReturnIcall", reinterpret_cast<void*>(&ArrayReturnIcall));
@@ -90,8 +89,8 @@ int main(int argc, char** argv)
 		if (attribute.GetType() == customAttributeType)
 		{
 			// Get the value of "Value" from the CustomAttribute attribute
-			std::cout << "CustomAttribute: " << attribute.GetFieldValue<float>("Value") << std::endl;
-		}
+			std::cout << "CustomAttribute: " << attribute.GetFieldValue<float>("Value") << "\n";
+		}"\n";
 	}
 
 	// Create an instance of type Example.Managed.ExampleClass and pass 50 to the constructor
@@ -104,14 +103,14 @@ int main(int argc, char** argv)
 	exampleInstance.SetPropertyValue("PublicProp", 10);
 
 	// Get the value of PublicProp as an int
-	std::cout << exampleInstance.GetPropertyValue<int32_t>("PublicProp") << std::endl;
-
+	std::cout << exampleInstance.GetPropertyValue<int32_t>("PublicProp") << "\n";
+"\n";
 	// Sets the value of the private field "myPrivateValue" with the value 10 (will NOT be multiplied by 2 in C#)
 	exampleInstance.SetFieldValue("myPrivateValue", 10);
 
 	// Get the value of myPrivateValue as an int
-	std::cout << exampleInstance.GetFieldValue<int32_t>("myPrivateValue") << std::endl;
-
+	std::cout << exampleInstance.GetFieldValue<int32_t>("myPrivateValue") << "\n";
+"\n";
 	// Invokes StringDemo method which will in turn invoke PrintStringIcall with a string parameter
 	exampleInstance.InvokeMethod("StringDemo");
 

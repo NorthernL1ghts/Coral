@@ -45,7 +45,7 @@ namespace Coral
 			break;
 		}
 
-		std::cout << "[Coral](" << level << "): " << InMessage << std::endl;
+		std::cout << "[Coral](" << level << "): " << InMessage << "\n";
 	}
 
 	CoralInitStatus HostInstance::Initialize(HostSettings InSettings)
@@ -91,7 +91,7 @@ namespace Coral
 	{
 		s_CoreCLRFunctions.CloseHostFXR(m_HostFXRContext);
 	}
-	
+
 	AssemblyLoadContext HostInstance::CreateAssemblyLoadContext(std::string_view InName)
 	{
 		ScopedString name = String::New(InName);
@@ -130,7 +130,7 @@ namespace Coral
 	{
 #if defined(CORAL_WINDOWS)
 		std::filesystem::path basePath = "";
-		
+
 		// Find the Program Files folder
 		TCHAR pf[MAX_PATH];
 		SHGetSpecialFolderPath(
@@ -221,7 +221,7 @@ namespace Coral
 
 		return true;
 	}
-	
+
 	bool HostInstance::InitializeCoralManaged()
 	{
 		// Fetch load_assembly_and_get_function_pointer_fn from CoreCLR
@@ -272,7 +272,7 @@ namespace Coral
 				MessageCallback(message, MessageLevel::Error);
 				return;
 			}
-			
+
 			ExceptionCallback(message);
 		});
 
